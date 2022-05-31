@@ -44,7 +44,7 @@ import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Warmup;
 
 public class MyBenchmark {
-	static int n = 10;
+	static int VALUE = 10;
 
 	@Benchmark
 	@BenchmarkMode(Mode.AverageTime)
@@ -53,7 +53,7 @@ public class MyBenchmark {
 	@Measurement(iterations = 5, time = 5, timeUnit = TimeUnit.SECONDS)
 	@Fork(1)
 	public void arrayFib() {
-		arrayFib(n);
+		arrayFib(VALUE);
 	}
 
 	@Benchmark
@@ -63,7 +63,7 @@ public class MyBenchmark {
 	@Measurement(iterations = 5, time = 5, timeUnit = TimeUnit.SECONDS)
 	@Fork(1)
 	public void slowFibMemoized() {
-		slowFibMemoized(n, new HashMap<>());
+		slowFibMemoized(VALUE, new HashMap<>());
 	}
 
 	@Benchmark
@@ -73,7 +73,7 @@ public class MyBenchmark {
 	@Measurement(iterations = 5, time = 5, timeUnit = TimeUnit.SECONDS)
 	@Fork(1)
 	public void fastFibMemoized() {
-		fastFibMemoized(n, new HashMap<>());
+		fastFibMemoized(VALUE, new HashMap<>());
 	}
 
 	private static long arrayFib(int n) {
@@ -109,13 +109,13 @@ public class MyBenchmark {
 
 	public static void main(String[] args) {
 		long start = System.nanoTime();
-		arrayFib(n);
+		arrayFib(VALUE);
 		System.out.println("array: " + (System.nanoTime() - start) + " ns");
 		start = System.nanoTime();
-		slowFibMemoized(n, new HashMap<>());
+		slowFibMemoized(VALUE, new HashMap<>());
 		System.out.println("slow: " + (System.nanoTime() - start) + " ns");
 		start = System.nanoTime();
-		fastFibMemoized(n, new HashMap<>());
+		fastFibMemoized(VALUE, new HashMap<>());
 		System.out.println("fast: " + (System.nanoTime() - start) + " ns");
 	}
 
