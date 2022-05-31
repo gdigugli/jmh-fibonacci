@@ -53,7 +53,7 @@ public class MyBenchmark {
 	@Measurement(iterations = 5, time = 5, timeUnit = TimeUnit.SECONDS)
 	@Fork(1)
 	public void arrayFib() {
-		arrayFib(n, new long[n + 1]);
+		arrayFib(n);
 	}
 
 	@Benchmark
@@ -74,6 +74,10 @@ public class MyBenchmark {
 	@Fork(1)
 	public void fastFibMemoized() {
 		fastFibMemoized(n, new HashMap<>());
+	}
+
+	private static long arrayFib(int n) {
+		return arrayFib(n, new long[n + 1]);
 	}
 
 	private static long arrayFib(int n, long[] memo) {
@@ -105,8 +109,8 @@ public class MyBenchmark {
 
 	public static void main(String[] args) {
 		long start = System.nanoTime();
-		arrayFib(n, new long[n + 1]);
-		System.out.println("slow: " + (System.nanoTime() - start) + " ns");
+		arrayFib(n);
+		System.out.println("array: " + (System.nanoTime() - start) + " ns");
 		start = System.nanoTime();
 		slowFibMemoized(n, new HashMap<>());
 		System.out.println("slow: " + (System.nanoTime() - start) + " ns");
