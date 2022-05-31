@@ -31,8 +31,6 @@
 
 package org.fibonacci;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.openjdk.jmh.annotations.Benchmark;
@@ -63,7 +61,7 @@ public class MyBenchmark {
 	@Measurement(iterations = 5, time = 5, timeUnit = TimeUnit.SECONDS)
 	@Fork(1)
 	public void slowFibMemoized() {
-		slowFibMemoized(VALUE, new HashMap<>());
+		slowFibMemoized(VALUE, new MapMap(VALUE));
 	}
 
 	@Benchmark
@@ -73,7 +71,7 @@ public class MyBenchmark {
 	@Measurement(iterations = 5, time = 5, timeUnit = TimeUnit.SECONDS)
 	@Fork(1)
 	public void fastFibMemoized() {
-		fastFibMemoized(VALUE, new HashMap<>());
+		fastFibMemoized(VALUE, new MapMap(VALUE));
 	}
 
 	private static long arrayFib(int n) {
@@ -85,26 +83,25 @@ public class MyBenchmark {
 			return n;
 		if (memo[n] != 0)
 			return memo[n];
-		memo[n] = arrayFib(n - 1, memo) + arrayFib(n - 2, memo);
-		return memo[n];
+		final long fibn = arrayFib(n - 1, memo) + arrayFib(n - 2, memo);
+		memo[n] = fibn;
+		return fibn;
 	}
 
-	private static long slowFibMemoized(int n, Map<Integer, Long> memo) {
+	private static long slowFibMemoized(int n, MapMap memo) {
 		if (n < 3)
 			return n;
 		if (memo.containsKey(n))
 			return memo.get(n);
-		memo.put(n, slowFibMemoized(n - 1, memo) + slowFibMemoized(n - 2, memo));
-		return memo.get(n);
+		return memo.put(n, slowFibMemoized(n - 1, memo) + slowFibMemoized(n - 2, memo));
 	}
 
-	private static long fastFibMemoized(int n, Map<Integer, Long> memo) {
+	private static long fastFibMemoized(int n, MapMap memo) {
 		if (n < 3)
 			return n;
 		if (memo.containsKey(n))
 			return memo.get(n);
-		memo.put(n, fastFibMemoized(n - 2, memo) + fastFibMemoized(n - 1, memo));
-		return memo.get(n);
+		return memo.put(n, fastFibMemoized(n - 1, memo) + slowFibMemoized(n - 2, memo));
 	}
 
 	public static void main(String[] args) {
@@ -112,11 +109,31 @@ public class MyBenchmark {
 		arrayFib(VALUE);
 		System.out.println("array: " + (System.nanoTime() - start) + " ns");
 		start = System.nanoTime();
-		slowFibMemoized(VALUE, new HashMap<>());
+		slowFibMemoized(VALUE, new MapMap(VALUE));
 		System.out.println("slow: " + (System.nanoTime() - start) + " ns");
 		start = System.nanoTime();
-		fastFibMemoized(VALUE, new HashMap<>());
+		fastFibMemoized(VALUE, new MapMap(VALUE));
 		System.out.println("fast: " + (System.nanoTime() - start) + " ns");
 	}
 
+	static class MapMap {
+		private final long[] values;
+
+		public MapMap(int size) {
+			values = new long[size + 1];
+		}
+
+		public boolean containsKey(int n) {
+			return values[n] != 0;
+		}
+
+		public long get(int n) {
+			return values[n];
+		}
+
+		public long put(int n, long l) {
+			values[n] = l;
+			return l;
+		}
+	}
 }
