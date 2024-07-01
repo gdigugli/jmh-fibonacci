@@ -1,4 +1,6 @@
 gdu@mbp13 jmh-fibonacci % java -jar target/jmh-fibonacci.jar
+
+```
 # JMH version: 1.35
 # VM version: JDK 17.0.3, OpenJDK 64-Bit Server VM, 17.0.3+7
 # VM invoker: /Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home/bin/java
@@ -169,3 +171,5 @@ MyBenchmark.fastArrayFib     avgt    5  12.488 ± 0.778  ns/op
 MyBenchmark.fastFib          avgt    5   0.740 ± 0.074  ns/op
 MyBenchmark.fastFibMemoized  avgt    5  22.757 ± 1.239  ns/op
 MyBenchmark.slowFibMemoized  avgt    5  22.379 ± 0.357  ns/op
+
+```
